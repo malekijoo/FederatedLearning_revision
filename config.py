@@ -11,7 +11,7 @@ Num_Client = 10
 NUM_ROUNDS = 10
 
 
-shape = (-1, 28, 28, 1)
+input_shape = (-1, 28, 28, 1)
 
 client_lr = 1e-2
 server_lr = 1e-2

@@ -9,21 +9,18 @@ from tensorflow import reshape, nest, config
 
 
 def build_train_tff_data():
-    print('shape here in tff ', shape[1:])
+    print('shape here in tff ', input_shape[1:])
     x_train, y_train = tfds.as_numpy(tfds.load(name_dt,
                                                split='train',
                                                batch_size=-1,
                                                as_supervised=True,
                                                ))
 
-    x_train = x_train.reshape(shape)
+    x_train = x_train.reshape(input_shape)
     y_train = to_categorical(y_train, NumClass)
 
     x_train = x_train.astype(np.float32)
     y_train = y_train.astype(np.int32)
-
-    # print(type(x_train), x_train.dtype, x_train.shape, to_categorical(y_train, NumClass).shape)
-    # print(type(y_train), y_train.dtype, y_train.shape)
 
     total_image_count = len(x_train)
     image_per_set = int(np.floor(total_image_count / Num_Client))
@@ -53,7 +50,7 @@ def build_train_tff_data():
             """Flatten a batch `pixels` and return the features as an `OrderedDict`."""
 
             return collections.OrderedDict(
-                x=reshape(element['pixels'], shape),
+                x=reshape(element['pixels'], input_shape),
                 y=reshape(element['label'], [-1, NumClass]))
 
         return dataset.repeat(NUM_EPOCHS).shuffle(SHUFFLE_BUFFER).batch(
@@ -81,7 +78,7 @@ def build_test_data():
                                              as_supervised=True,
                                              ))
 
-    x_test = x_test.reshape(shape)
+    x_test = x_test.reshape(input_shape)
     y_test = to_categorical(y_test, NumClass)
 
     x_test = x_test.astype(np.float32)
@@ -92,8 +89,6 @@ def build_test_data():
 
 def load(phase='train'):
     """
-
-    :param shape:
     :param phase: it should be 'test' or 'train'
 
     :return: load the dataset in federated mode for Training, or

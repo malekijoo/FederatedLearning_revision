@@ -1,7 +1,7 @@
 import tensorflow as tf
 import tensorflow_federated as tff
 import fed_compression
-
+import dnn_models as dnn
 from datetime import datetime
 from config import *
 from pathlib import Path
@@ -27,37 +27,7 @@ if not output_dir.exists():
 
 
 federated_train_data, preprocessed_sample_dataset = loding_dataset(phase='train')
-
-
-def create_keras_model():
-    model = tf.keras.models.Sequential()
-    model.add(tf.keras.layers.Conv2D(input_shape=(28, 28, 1), filters=64, kernel_size=(3, 3), padding="same",
-                                     activation="relu"))
-    model.add(tf.keras.layers.Conv2D(filters=64, kernel_size=(3, 3), padding="same", activation="relu"))
-    model.add(tf.keras.layers.MaxPool2D(pool_size=(2, 2), strides=(2, 2)))
-    model.add(tf.keras.layers.Conv2D(filters=128, kernel_size=(3, 3), padding="same", activation="relu"))
-    model.add(tf.keras.layers.Conv2D(filters=128, kernel_size=(3, 3), padding="same", activation="relu"))
-    model.add(tf.keras.layers.MaxPool2D(pool_size=(2, 2), strides=(2, 2)))
-    model.add(tf.keras.layers.Conv2D(filters=256, kernel_size=(3, 3), padding="same", activation="relu"))
-    model.add(tf.keras.layers.Conv2D(filters=256, kernel_size=(3, 3), padding="same", activation="relu"))
-    model.add(tf.keras.layers.Conv2D(filters=256, kernel_size=(3, 3), padding="same", activation="relu"))
-    model.add(tf.keras.layers.MaxPool2D(pool_size=(2, 2), strides=(2, 2)))
-    model.add(tf.keras.layers.Conv2D(filters=512, kernel_size=(3, 3), padding="same", activation="relu"))
-    model.add(tf.keras.layers.Conv2D(filters=512, kernel_size=(3, 3), padding="same", activation="relu"))
-    model.add(tf.keras.layers.Conv2D(filters=512, kernel_size=(3, 3), padding="same", activation="relu"))
-    model.add(tf.keras.layers.MaxPool2D(pool_size=(2, 2), strides=(2, 2)))
-    model.add(tf.keras.layers.Conv2D(filters=512, kernel_size=(3, 3), padding="same", activation="relu"))
-    model.add(tf.keras.layers.Conv2D(filters=512, kernel_size=(3, 3), padding="same", activation="relu"))
-    model.add(tf.keras.layers.Conv2D(filters=512, kernel_size=(3, 3), padding="same", activation="relu"))
-    model.add(tf.keras.layers.Flatten())
-    model.add(tf.keras.layers.Dense(units=4096, activation="relu"))
-    model.add(tf.keras.layers.Dense(units=4096, activation="relu"))
-    model.add(tf.keras.layers.Dense(units=NumClass, activation="softmax"))
-
-    ##############################################################################################
-    ##############################################################################################
-
-    return model
+create_keras_model = dnn.keras_model('resnet')
 
 
 def model_fn():
