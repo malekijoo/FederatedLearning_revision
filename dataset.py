@@ -1,5 +1,6 @@
 import collections
 import numpy as np
+import tensorflow as tf
 import tensorflow_datasets as tfds
 import tensorflow_federated as tff
 
@@ -9,12 +10,15 @@ from tensorflow import reshape, nest, config
 
 
 def build_train_tff_data():
-    print('shape here in tff ', input_shape[1:])
     x_train, y_train = tfds.as_numpy(tfds.load(name_dt,
                                                split='train',
                                                batch_size=-1,
                                                as_supervised=True,
                                                ))
+    shape = x_train[1].shape
+
+    if input_shape != shape:
+        x_train = tf.image.resize_with_pad(x_train, input_shape[1], input_shape[2]).numpy()
 
     x_train = x_train.reshape(input_shape)
     y_train = to_categorical(y_train, NumClass)
@@ -25,7 +29,6 @@ def build_train_tff_data():
     total_image_count = len(x_train)
     image_per_set = int(np.floor(total_image_count / Num_Client))
 
-    print(image_per_set, total_image_count)
     client_train_dataset = collections.OrderedDict()
     for i in range(1, Num_Client + 1):
         client_name = "client_" + str(i)
@@ -87,11 +90,11 @@ def build_test_data():
     return x_test, y_test
 
 
-def load(phase='train'):
+def load_dataset(phase='train'):
     """
     :param phase: it should be 'test' or 'train'
 
-    :return: load the dataset in federated mode for Training, or
+    :return: loding_dataset the dataset in federated mode for Training, or
              simple sequence dataset for Testing Phase
     """
 

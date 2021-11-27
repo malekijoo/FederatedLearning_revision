@@ -133,8 +133,8 @@ class ClientFedAvg(optimizer_utils.ClientDeltaFn):
 
 
     ## commit the compression
-    print(len(weights_delta), type(weights_delta))
-    print(weights_delta)
+    # print(len(weights_delta), type(weights_delta))
+    # print(weights_delta)
     weights_delta = ds.applying_prune(weights_delta, sparsity_top_key=True)
     # tf.print(weights_delta)
     weights_delta = ds.applying_quantization(weights_delta)

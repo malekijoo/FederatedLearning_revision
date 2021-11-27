@@ -5,23 +5,26 @@ from config import *
 
 class keras_model(tf.keras.Model):
 
-    def __init__(self, name):
+    def __init__(self, model_name):
 
-        if name == 'attention':
+        super(keras_model, self).__init__()
+        self.model_name = model_name
+
+        if 'attention' in self.model_name.lower():
             pass
 
-        elif name == 'VGG':
+        elif 'vgg' in self.model_name.lower():
             self.model = self.build_vgg()
 
-        elif name == 'resnet' or name == 'RESNET' or name == 'ResNet':
+        elif 'resnet' in self.model_name.lower():
             print('ResNet model is built with tf.keras.application.ResNet101')
             self.model = tf.keras.applications.ResNet101(include_top=True, weights=None,
                                                          input_shape=input_shape[1:], classes=NumClass,
                                                          classifier_activation='softmax')
 
-    def __call__(self):
-        print('loading the model')
-        return self.model
+    def __call__(self, inputs, training=True):
+        print('loading the model ')
+        return self.model(inputs)
 
     def build_vgg(self):
 
