@@ -81,6 +81,11 @@ def build_test_data():
                                              as_supervised=True,
                                              ))
 
+    shape = x_test[1].shape
+
+    if input_shape != shape:
+        x_test = tf.image.resize_with_pad(x_test, input_shape[1], input_shape[2]).numpy()
+
     x_test = x_test.reshape(input_shape)
     y_test = to_categorical(y_test, NumClass)
 
